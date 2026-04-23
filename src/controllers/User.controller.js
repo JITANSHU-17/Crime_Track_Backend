@@ -88,10 +88,49 @@ const User_signin = async (req, res) => {
   }
 };
 const User_signout = (req, res) => {
-  res.clearCookie("token").json({
-    msg: "user logged out successfully"
-  });
+    res.clearCookie("token", {
+        httpOnly: true,
+        secure: false,
+        sameSite: "strict"
+    }).status(200).json({
+        msg: "user logged out successfully"
+    });
+}
+
+const forgot_password = async (req, res) => {
+    try {
+        const { email } = req.body;
+        if (!email) {
+            return res.status(400).json({
+                msg: "Please enter your email"
+            });
+        }
+        const hash_email = hash(email);
+        const user = await User.findOne({ hash_email });
+        if (!user) {
+            return res.status(404).json({
+                msg: "User not exist"
+            });
+        }
+        // generate reset token
+        const reset_token = jwt.sign(
+            { hash_email: user.hash_email },
+            process.env.JWT_SECRET,
+            { expiresIn: "1h" }
+        );
+        // send reset token to user's email (you can use nodemailer or any email service)
+        // for demo purpose we will return the reset token in response
+        return res.status(200).json({
+            msg: "Reset token generated successfully",
+            reset_token
+        });
+    } catch (error) {
+        console.log(error); 
+        res.status(500).json({
+            msg: "Something went wrong"
+        });
+    }
 }
 
 
-export  {User_sign_up,User_signin,User_signout}
+export  {User_sign_up,User_signin,User_signout,forgot_password};

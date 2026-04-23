@@ -26,6 +26,6 @@ const auth_user = (req, res, next) => {
             msg: "Invalid token"
         });
     }
-};
+}
 
 export default auth_user;
