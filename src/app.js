@@ -24,9 +24,9 @@ app.listen(PORT, "0.0.0.0", () => {
 });
 
 })
-.catch(()=>{
-  console.log("issue in db connection")
-})
+.catch((err) => {
+  console.error("DB connection error:", err.message);
+});
  
 app.use("/api/auth",userroute)
 
