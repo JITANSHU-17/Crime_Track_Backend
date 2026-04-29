@@ -15,8 +15,13 @@ app.use(express.json())
 connectDb()
 .then(()=>{
   console.log("db connected successfully")
-  app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+  app.get("/", (req, res) => {
+  res.send("Server running");
+});
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server running on port ${PORT}`);
+});
 });
 
 })
